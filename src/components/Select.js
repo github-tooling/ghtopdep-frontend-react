@@ -1,13 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,39 +14,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
 
-function Select() {
+function Select({ onRepoSelect }) {
   const classes = useStyles();
-  const row = [
-    {
-      id: "5e9defb7ee60264c95dc1e3",
-      text: "dropbox/dropbox-sdk-js",
-      url: "https://github.com/dropbox/dropbox-sdk-js"
-    },
-    {
-      id: "5e9defb7ee60264c95dc1e37",
-      text: "dropbox",
-      url: "https://github.com/dropbox/dropbox"
-    }
-  ];
+  const [repos, setRepos] = useState([]);
 
-  function showItem(item) {
-    console.log(item);
+  useEffect(() => {
+    fetchAllRepos().then(allRepos => setRepos(allRepos));
+  }, []);
+
+
+  function fetchAllRepos() {
+     return fetch(`${process.env.REACT_APP_BASE_URL}/all`).then(response => response.json());
   }
 
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="secondary mailbox folders">
-        {row.map((col, j) => (
-          <>
-            <ListItem button onClick={() => showItem(col)}>
-              <ListItemText primary={col.text} />
+        {repos.map((repo, j) => (
+          <div key={repo.id}>
+            <ListItem button onClick={() => onRepoSelect(repo)}>
+              <ListItemText primary={repo.text} />
             </ListItem>
             <Divider />
-          </>
+          </div>
         ))}
       </List>
     </div>

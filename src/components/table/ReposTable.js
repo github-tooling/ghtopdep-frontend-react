@@ -7,57 +7,42 @@ import { AgGridReact } from "ag-grid-react";
 
 import RepoUrlRenderer from "./RepoUrlRenderer";
 
-function ReposTable() {
-  const state = {
-    columnDefs: [
-      {
-        headerName: "Repo",
-        field: "url",
-        cellRenderer: 'repoUrlRenderer',
-        filter: true,
-        resizable: true,
-        flex: 2,
-      },
-      {
-        headerName: "Stars",
-        field: "stars",
-        sortable: true,
-        sort: 'desc',
-        resizable: true,
-        type: "numericColumn",
-        flex: 1,
-      }
-    ],
-    frameworkComponents: {
-      repoUrlRenderer: RepoUrlRenderer,
+function ReposTable({rowData}) {
+  const columnDefs = [
+    {
+      headerName: "Repo",
+      field: "url",
+      cellRenderer: 'repoUrlRenderer',
+      filter: true,
+      resizable: true,
+      flex: 2,
     },
-    rowData: [
-      {
-        stars: 20,
-        url: "https://github.com/PatrickJS/node-everything",
-      },
-      {
-        stars: 7,
-        url: "https://github.com/ZenithDevs/eclipse",
-      },
-      {
-        stars: 36,
-        url: "https://github.com/bradyhouse/house",
-      },
-    ],
-  };
+    {
+      headerName: "Stars",
+      field: "stars",
+      sortable: true,
+      sort: 'desc',
+      resizable: true,
+      type: "numericColumn",
+      flex: 1,
+    }
+  ];
+  const frameworkComponents = {
+    repoUrlRenderer: RepoUrlRenderer,
+  }
 
   return (
     <div
       className="ag-theme-balham"
       style={{
         width: "400px",
+        height: "calc(100vh - 100px)"
       }}
     >
       <AgGridReact
-        columnDefs={state.columnDefs}
-        rowData={state.rowData}
-        frameworkComponents={state.frameworkComponents}
+        columnDefs={columnDefs}
+        rowData={rowData}
+        frameworkComponents={frameworkComponents}
       ></AgGridReact>
     </div>
   );

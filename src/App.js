@@ -1,9 +1,11 @@
-import React from 'react';
-import ReposTable from "./components/table/ReposTable";
-import Select from "./components/Select";
+import React, {useState} from 'react';
+
 import {makeStyles} from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+import Select from "./components/Select";
+import ReposTable from "./components/table/ReposTable";
+
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
     margin: '30px'
@@ -15,13 +17,22 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
+  const [result, setResult] = useState([]);
+
+  function onRepoSelect(item) {
+    fetchResultByRepo(item.url).then(res => setResult(res.deps));
+  }
+
+  function fetchResultByRepo(url) {
+     return fetch(`${process.env.REACT_APP_BASE_URL}/repos?url=${url}`).then(response => response.json());
+  }
 
   return (
     <div className={classes.root}>
       <div className={classes.select}>
-        <Select />
+        <Select onRepoSelect={onRepoSelect}/>
       </div>
-      <ReposTable/>
+      <ReposTable rowData={result}/>
     </div>
   );
 }
